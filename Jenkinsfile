@@ -44,10 +44,8 @@ pipeline {
     stage("Deploy") {
       agent { node {label 'master'}}
       steps {
-        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-server', keyFileVariable: 'SSH_KEY')]) {
-            sh "chmod +x deploy.sh"
-            sh "ssh -i $SSH_KEY -oStrictHostKeyChecking=no jenkins@54.251.229.128 ./deploy.sh"
-        }
+        sh "chmod +x deploy.sh"
+        sh "./deploy.sh"
       }
     }
   }
