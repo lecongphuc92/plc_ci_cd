@@ -3,6 +3,7 @@ pipeline {
   agent none
 
   environment {
+    PATH = "/usr/local/bin/docker-compose"
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
   }
 
@@ -46,7 +47,7 @@ pipeline {
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-server', keyFileVariable: 'SSH_KEY')]) {
             sh "chmod +x deploy.sh"
-            sh "ssh -i $SSH_KEY jenkins@54.251.229.128 ./deploy.sh"
+            sh "ssh -i $SSH_KEY -oStrictHostKeyChecking=no jenkins@54.251.229.128 ./deploy.sh"
         }
       }
     }
