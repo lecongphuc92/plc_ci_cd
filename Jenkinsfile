@@ -3,7 +3,6 @@ pipeline {
   agent none
 
   environment {
-    PATH = "/usr/local/bin/docker-compose"
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
   }
 
