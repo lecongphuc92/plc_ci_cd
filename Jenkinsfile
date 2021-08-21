@@ -17,7 +17,6 @@ pipeline {
       steps {
         sh "pip install -U pip"
         sh "pip install pytest"
-        sh "python app/manage.py test ./app"
       }
     }
 
