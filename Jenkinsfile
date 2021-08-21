@@ -17,7 +17,6 @@ pipeline {
       steps {
         sh "pip install -U pip"
         sh "pip install pytest"
-        sh "python app/manage.py test ./app"
       }
     }
 
@@ -40,6 +39,12 @@ pipeline {
         sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
         sh "docker image rm ${DOCKER_IMAGE}:latest"
       }
+    }
+
+    stage("Deploy") {
+        withCredentials([sshKey(credentialsId: 'docker-hub',, sshKeyVariable: 'SSH_KEY')]) {
+            sh 'ssh -i $SSH_KEY jenkins@54.251.229.128 ./deploy.sh'
+        }
     }
   }
 
