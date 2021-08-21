@@ -16,5 +16,5 @@ Including another URLconf
 from django.urls import path, include
 
 urlpatterns = [
-    path('student/', include('student.urls')),
+    path('', include('student.urls')),
 ]
