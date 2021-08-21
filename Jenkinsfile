@@ -44,7 +44,8 @@ pipeline {
     stage("Deploy") {
       agent { node {label 'master'}}
       steps {
-        sh './deploy.sh'
+        sh "chmod +x deploy.sh"
+        sh "./deploy.sh"
       }
     }
   }
