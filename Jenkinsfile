@@ -46,7 +46,6 @@ pipeline {
       when {
         allOf {
             environment name: 'CHANGE_ID', value: ''
-            branch BRANCH_MAIN
         }
       }
       steps {
