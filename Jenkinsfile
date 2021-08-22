@@ -43,7 +43,14 @@ pipeline {
 
     stage("Deploy") {
       agent { node {label 'master'}}
+      when {
+        allOf {
+            environment name: 'CHANGE_ID', value: ''
+            branch BRANCH_MAIN
+        }
+      }
       steps {
+        // not a pull request so do something
         sh "chmod +x deploy.sh"
         withEnv(["PATH=$PATH:~/.local/bin"]){
           sh "./deploy.sh"
