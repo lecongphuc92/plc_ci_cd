@@ -1,6 +1,11 @@
 pipeline {
 
-  agent none
+  agent {
+      docker {
+        image 'python:3.8-slim-buster'
+        args '-u 0:0 -v /tmp:/root/.cache'
+      }
+  }
 
   environment {
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
@@ -8,12 +13,6 @@ pipeline {
 
   stages {
     stage("Test") {
-      agent {
-          docker {
-            image 'python:3.8-slim-buster'
-            args '-u 0:0 -v /tmp:/root/.cache'
-          }
-      }
       steps {
         sh "pip install -U pip"
         sh "pip install pytest"
@@ -21,7 +20,6 @@ pipeline {
     }
 
     stage("Build") {
-      agent { node {label 'master'}}
       environment {
         DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
       }
@@ -41,14 +39,29 @@ pipeline {
       }
     }
 
-    stage("Deploy") {
-      agent { node {label 'master'}}
-      steps {
-        sh "chmod +x deploy.sh"
-        withEnv(["PATH=$PATH:~/.local/bin"]){
-          sh "./deploy.sh"
+    stage('Deploy for development') {
+        when {
+           branch 'staging'
         }
-      }
+        steps {
+            sh "chmod +x deploy.sh"
+            withEnv(['PATH = "$PATH:/usr/local/bin"']){
+                echo "PATH is: $PATH"
+                sh "./deploy.sh"
+            }
+        }
+    }
+
+    stage('Deploy for production') {
+        when {
+           branch 'master'
+        }
+        steps {
+            withEnv(['PATH = "$PATH:/usr/local/bin"']){
+                sh "chmod +x deploy.sh"
+                sh "./deploy.sh"
+            }
+        }
     }
   }
 
