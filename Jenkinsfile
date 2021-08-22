@@ -40,21 +40,27 @@ pipeline {
     }
 
     stage('Deploy for development') {
+        when {
+           branch 'staging'
+        }
         steps {
             sh "chmod +x deploy.sh"
-            withEnv(['PATH+EXTRA=/usr/sbin:/usr/bin:/sbin:/bin']){
+            withEnv(['PATH = "$PATH:/usr/local/bin"']){
                 echo "PATH is: $PATH"
                 sh "./deploy.sh"
             }
         }
     }
+
     stage('Deploy for production') {
         when {
            branch 'master'
         }
         steps {
-            sh "chmod +x deploy.sh"
-            sh "./deploy.sh"
+            withEnv(['PATH = "$PATH:/usr/local/bin"']){
+                sh "chmod +x deploy.sh"
+                sh "./deploy.sh"
+            }
         }
     }
   }
