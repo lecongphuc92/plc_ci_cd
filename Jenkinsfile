@@ -43,9 +43,6 @@ pipeline {
         environment {
             PATH = "$PATH:/usr/local/bin"
         }
-        when {
-            branch 'staging'
-        }
         steps {
             sh "chmod +x deploy.sh"
             sh "./deploy.sh"
