@@ -45,7 +45,7 @@ pipeline {
       agent { node {label 'master'}}
       steps {
         sh "chmod +x deploy.sh"
-        withEnv(["PATH=$PATH:/usr/local/bin"]){
+        withEnv(["PATH=$PATH:~/.local/bin"]){
           sh "./deploy.sh"
         }
       }
