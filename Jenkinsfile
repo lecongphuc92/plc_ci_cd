@@ -4,7 +4,6 @@ pipeline {
 
   environment {
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
-    PATH = "$PATH:/usr/local/bin"
   }
 
   stages {
@@ -46,7 +45,9 @@ pipeline {
       agent { node {label 'master'}}
       steps {
         sh "chmod +x deploy.sh"
-        sh "./deploy.sh"
+        withEnv(["PATH=$PATH:/usr/local/bin"]){
+          sh "./deploy.sh"
+        }
       }
     }
   }
