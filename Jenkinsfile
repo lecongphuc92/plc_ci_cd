@@ -37,13 +37,14 @@ pipeline {
 
         //clean to save disk
         sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
-        sh "docker image rm ${DOCKER_IMAGE}:latest"
+        // sh "docker image rm ${DOCKER_IMAGE}:latest"
       }
     }
 
     stage("Deploy") {
       agent { node {label 'master'}}
       steps {
+        sh "echo $PATH"
         sh "chmod +x deploy.sh"
         sh "./deploy.sh"
       }
