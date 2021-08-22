@@ -3,5 +3,5 @@ version: "3.9"
 services:
   django-app:
     image: lecongphuc92/plc_ci_cd:latest
-      ports:
-        - "8000:8000"
+    ports:
+      - "8000:8000"
