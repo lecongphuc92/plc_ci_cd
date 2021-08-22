@@ -5,4 +5,4 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 COPY . /app/
-CMD ["gunicorn","-b","0.0.0.0:8000", "server:app"]
+CMD ["gunicorn","-b","0.0.0.0:8000", "test_aws.wsgi:application"]
