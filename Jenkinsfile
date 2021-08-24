@@ -1,10 +1,6 @@
 pipeline {
 
-  agent {
-      docker {
-        image 'python:3.8-slim-buster'
-      }
-  }
+  agent any
 
   environment {
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
@@ -40,12 +36,8 @@ pipeline {
     stage('Deploy for development') {
       steps {
         sh "chmod +x deploy.sh"
-        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keystoreVariable: 'SSH_KEY')]) {
             sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no root@149.28.131.8 ./deploy.sh'
-        }
-        withEnv(['PATH = "$PATH:/usr/local/bin"']){
-            echo "PATH is: $PATH"
-            sh "./deploy.sh"
         }
       }
     }
