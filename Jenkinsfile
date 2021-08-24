@@ -3,7 +3,6 @@ pipeline {
   agent {
       docker {
         image 'python:3.8-slim-buster'
-        args '-u 0:0 -v /tmp:/root/.cache'
       }
   }
 
@@ -12,13 +11,6 @@ pipeline {
   }
 
   stages {
-    stage("Test") {
-      steps {
-        sh "pip install -U pip"
-        sh "pip install pytest"
-      }
-    }
-
     stage("Build") {
       environment {
         DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
@@ -36,6 +28,13 @@ pipeline {
         //clean to save disk
         sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
         // sh "docker image rm ${DOCKER_IMAGE}:latest"
+      }
+    }
+
+    stage("Test") {
+      steps {
+        sh "pip install -U pip"
+        sh "pip install pytest"
       }
     }
 
