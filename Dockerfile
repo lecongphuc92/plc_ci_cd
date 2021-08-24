@@ -11,5 +11,5 @@ RUN pip install -r requirements.txt
 COPY . /code/
 
 EXPOSE 8000
-CMD ["gunicorn", "--bind", ":8000", "app.asgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.wsgi:application"]
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

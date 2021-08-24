@@ -39,28 +39,16 @@ pipeline {
     }
 
     stage('Deploy for development') {
-        when {
-           branch 'staging'
+      steps {
+        sh "chmod +x deploy.sh"
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
+            sh 'ssh -i $SSH_KEY root@149.28.131.8 ./deploy.sh'
         }
-        steps {
-            sh "chmod +x deploy.sh"
-            withEnv(['PATH = "$PATH:/usr/local/bin"']){
-                echo "PATH is: $PATH"
-                sh "./deploy.sh"
-            }
+        withEnv(['PATH = "$PATH:/usr/local/bin"']){
+            echo "PATH is: $PATH"
+            sh "./deploy.sh"
         }
-    }
-
-    stage('Deploy for production') {
-        when {
-           branch 'master'
-        }
-        steps {
-            withEnv(['PATH = "$PATH:/usr/local/bin"']){
-                sh "chmod +x deploy.sh"
-                sh "./deploy.sh"
-            }
-        }
+      }
     }
   }
 
