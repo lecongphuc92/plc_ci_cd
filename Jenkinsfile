@@ -33,8 +33,7 @@ pipeline {
 
     stage("Test") {
       steps {
-        sh "pip install -U pip"
-        sh "pip install pytest"
+        echo "Testinggggggg"
       }
     }
 
