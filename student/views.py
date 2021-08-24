@@ -1,5 +1,7 @@
-from django.http import HttpResponse
+from django.http.response import HttpResponse
+from .tasks import *
 
 
 def index(request):
-    return HttpResponse("Hello, world")
+    res = add.delay(4, 5)
+    return HttpResponse(res)
