@@ -3,7 +3,6 @@ pipeline {
   agent {
       docker {
         image 'python:3.8-slim-buster'
-        args '-u 0:0 -v /tmp:/root/.cache'
       }
   }
 
@@ -12,13 +11,6 @@ pipeline {
   }
 
   stages {
-    stage("Test") {
-      steps {
-        sh "pip install -U pip"
-        sh "pip install pytest"
-      }
-    }
-
     stage("Build") {
       environment {
         DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
@@ -35,33 +27,27 @@ pipeline {
 
         //clean to save disk
         sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
-        // sh "docker image rm ${DOCKER_IMAGE}:latest"
+        sh "docker image rm ${DOCKER_IMAGE}:latest"
+      }
+    }
+
+    stage("Test") {
+      steps {
+        echo "Testinggggggg"
       }
     }
 
     stage('Deploy for development') {
-        when {
-           branch 'staging'
+      steps {
+        sh "chmod +x deploy.sh"
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
+            sh 'ssh -i $SSH_KEY root@149.28.131.8 ./deploy.sh'
         }
-        steps {
-            sh "chmod +x deploy.sh"
-            withEnv(['PATH = "$PATH:/usr/local/bin"']){
-                echo "PATH is: $PATH"
-                sh "./deploy.sh"
-            }
+        withEnv(['PATH = "$PATH:/usr/local/bin"']){
+            echo "PATH is: $PATH"
+            sh "./deploy.sh"
         }
-    }
-
-    stage('Deploy for production') {
-        when {
-           branch 'master'
-        }
-        steps {
-            withEnv(['PATH = "$PATH:/usr/local/bin"']){
-                sh "chmod +x deploy.sh"
-                sh "./deploy.sh"
-            }
-        }
+      }
     }
   }
 
