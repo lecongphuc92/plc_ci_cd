@@ -33,7 +33,7 @@ pipeline {
 
     stage("Test") {
       steps {
-        echo "Testinggggggg"
+        echo "Testingggggg"
       }
     }
 
@@ -41,7 +41,7 @@ pipeline {
       steps {
         sh "chmod +x deploy.sh"
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
-            sh 'ssh -i $SSH_KEY root@149.28.131.8 ./deploy.sh'
+            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no root@149.28.131.8 ./deploy.sh'
         }
         withEnv(['PATH = "$PATH:/usr/local/bin"']){
             echo "PATH is: $PATH"
