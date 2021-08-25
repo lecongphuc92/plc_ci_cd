@@ -37,7 +37,7 @@ pipeline {
       steps {
         sh "chmod +x deploy.sh"
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
-            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 "docker run -d -p 8000:8000 --name django-app ${DOCKER_IMAGE}:latest"'
+            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 "docker stop django-app && docker rm django-app && docker run -d -p 8000:8000 --name django-app ${DOCKER_IMAGE}:latest"'
         }
       }
     }
