@@ -28,7 +28,7 @@ pipeline {
       steps {
         sh "chmod +x deploy.sh"
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
-            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 ./deploy.sh'
+            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 "cd /home/ubuntu/ && ./deploy.sh"'
         }
       }
     }
