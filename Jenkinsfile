@@ -1,10 +1,6 @@
 pipeline {
 
-  agent {
-      docker {
-        image 'python:3.8-slim-buster'
-      }
-  }
+  agent any
 
   environment {
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
@@ -33,7 +29,7 @@ pipeline {
 
     stage("Test") {
       steps {
-        echo "Testinggggggg"
+        echo "Testinggg"
       }
     }
 
@@ -41,11 +37,7 @@ pipeline {
       steps {
         sh "chmod +x deploy.sh"
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
-            sh 'ssh -i $SSH_KEY root@149.28.131.8 ./deploy.sh'
-        }
-        withEnv(['PATH = "$PATH:/usr/local/bin"']){
-            echo "PATH is: $PATH"
-            sh "./deploy.sh"
+            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 "docker stop django-app && docker rm django-app && docker run -d -p 8000:8000 --name django-app ${DOCKER_IMAGE}:latest"'
         }
       }
     }
