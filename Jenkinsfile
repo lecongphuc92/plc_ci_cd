@@ -28,7 +28,7 @@ pipeline {
       steps {
         sh "chmod +x deploy.sh"
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
-            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 "cd /home/ubuntu/ && docker-compose stop && docker-compose rm -f && docker-compose pull && docker-compose up -d"'
+            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@18.142.51.134 "cd /home/ubuntu/ && ./deploy.sh"'
         }
       }
     }
