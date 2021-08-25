@@ -1,10 +1,6 @@
 pipeline {
 
-  agent {
-      docker {
-        image 'python:3.8-slim-buster'
-      }
-  }
+  agent any
 
   environment {
     DOCKER_IMAGE = "lecongphuc92/plc_ci_cd"
@@ -19,33 +15,20 @@ pipeline {
         sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} . "
         sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
         sh "docker image ls | grep ${DOCKER_IMAGE}"
-        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-            sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
-            sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
-            sh "docker push ${DOCKER_IMAGE}:latest"
-        }
-
-        //clean to save disk
-        sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
-        sh "docker image rm ${DOCKER_IMAGE}:latest"
       }
     }
 
     stage("Test") {
       steps {
-        echo "Testinggggggg"
+        echo "Testinggg"
       }
     }
 
     stage('Deploy for development') {
       steps {
         sh "chmod +x deploy.sh"
-        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keyFileVariable: 'SSH_KEY')]) {
-            sh 'ssh -i $SSH_KEY root@149.28.131.8 ./deploy.sh'
-        }
-        withEnv(['PATH = "$PATH:/usr/local/bin"']){
-            echo "PATH is: $PATH"
-            sh "./deploy.sh"
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key-staging', keystoreVariable: 'SSH_KEY')]) {
+            sh 'ssh -i $SSH_KEY -o StrictHostKeyChecking=no root@149.28.131.8 ./deploy.sh'
         }
       }
     }
